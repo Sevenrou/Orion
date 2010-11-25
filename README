@@ -1,0 +1,91 @@
+Orion Skycube Computing
+_______________________
+
+This program implements the algorithms described in VLDB 2010's research paper
+"Computing Closed Skycubes" (Raissi, Pei and Kister). You can contact the
+author at the following address: thomas.kister@gmail.com
+
+It is distributed under the GPL v2 license terms.
+
+
+Compiling
+_________
+
+In order to compile it successfully, you need cmake as well as a recent enough
+Boost library implementation that implements TR1's unordered_map. The best way
+to achieve this is to issue the following commands from the root directory of
+the Orion package:
+$ cd build/
+$ cmake ..
+$ make
+The binary will be compiled in ./src/Orion (in the build/ directory).
+
+
+Usage
+_____
+
+You can print an help message with either -h or --help.
+
+Input data can be any composed of any integer or floating-point number fitting
+in C/C++'s double capacity. Each line represents an element while each column
+represents a dimension. The parser expects fields to be separated either by
+spaces or commas, the first one encountered in the input file will be selected.
+Empty fields are not allowed, the loading will fail if the parser detects any
+inconsistency in the number of fields. Moreover, the parser will stop either at
+the end of the file or at the first empty line, whichever happens first.
+
+By default, Orion will consider that "the lower the value, the better." If you
+want some (or all) dimensions to be considered as "the upper the value, the
+better," you can use the -s option. Each dimension then needs to be described
+by a string (passed as a parameter to -s) containing either 'u' for upper is
+better or 'l' for lower is better.
+
+There are two main algorithms available. Please refer to the research paper for
+a thorough explanation, br_dom is just a variation of breadth.
+
+
+Output
+______
+
+For now, the output files are using a human-readable format.
+
+The output files share the following syntax:
+- dimensions are counted starting from zero,
+- a lattice node is expressed by a concatenation of its dimensions, and every
+  number is prefixed by the letter 'd' to avoid ambiguities,
+- elements are counted starting from zero,
+- a skyline is a comma-separated list of elements, however combined elements
+  (i.e. elements that can't be distinguished in the current subset) will be an
+  hyphen-separated list of elements within the comma-separated list.
+
+For instance, the following line:
+  d0d3d4 : e1,e4-e7,e5
+means that for the node of dimensions 0, 3 and 4, the skyline is comprised of
+the elements 1, 4, 5 and 7, the elements 4 and 7 being combined.
+
+
+The name of the output file will be the one of the input file suffixed by the
+name of the algorithm used:
+- .del for the depth one
+- .dep for the depth one without computing first the last node (option -nolast)
+- .bre for the breadth one
+- .brd for the breadth one with domain optimisations
+
+Then the ordering of each dimension, as specified on the command line (or full
+of 'l' by default) will be suffixed, for instance:
+- .llll means that the source file has 4 dimensions, all "lower is better"
+- .uuulluul means that the source file has 8 dimensions, with mixed ordering
+
+Finally the .res suffix is added.
+
+
+The contents of the output file differ depending on the algorithm used. For the
+depth one, a list of closed groups will be provided, for instance:
+  d0d1d2d3 : e1,e2,e5-e6 : d0d1d2,d1d2d3
+The three main fields are separated by a colon, they respectively represent:
+- a comma-separated list of closures,
+- the skyline of the group,
+- a comma-separated list of generators.
+
+For the breadth one it is simply the list of each node with its skyline.
+
