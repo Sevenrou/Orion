@@ -8,11 +8,8 @@ add_executable(Orion
   main.cpp
   readfile.cpp
   utils.cpp
+  os/mac_clock_gettime.cpp
 )
-
-if(APPLE)
-  add_executable(Orion os/mac_clock_gettime.cpp)
-endif(APPLE)
 
 target_link_libraries(Orion rt)
 
