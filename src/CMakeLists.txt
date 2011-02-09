@@ -1,5 +1,5 @@
 
-find_package(Boost REQUIRED)
+find_package(Boost 1.37 REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 add_executable(Orion
