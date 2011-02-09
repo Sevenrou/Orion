@@ -3,7 +3,10 @@ _______________________
 
 This program implements the algorithms described in VLDB 2010's research paper
 "Computing Closed Skycubes" (Raissi, Pei and Kister). You can contact the
-author at the following address: thomas.kister@gmail.com
+authors at the following addresses:
+- thomas.kister@gmail.com
+- chedy.raissi@loria.fr
+- jpei@sfu.ca
 
 It is distributed under the GPL v2 license terms.
 
