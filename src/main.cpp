@@ -30,9 +30,12 @@
 #endif // __APPLE__
 
 
-#define SYNTAX	"UnifiedSkyCube [-s UpperOrLower] -a Algo Filename\n\n"\
+#define SYNTAX	"UnifiedSkyCube [-s UpperOrLower] [-l] -a Algo Filename\n\n"\
 				"  -s UPPERORLOWER\tString consisting of either u or l for each dimension\n"\
 				"\t\t\tBy default it is l (lowest) for each dimension\n\n"\
+				"  -label\t\tIndicates that the first column contains a label for\n"\
+				"\t\t\teach element. These labels are used in the output to\n"\
+				"\t\t\treplace the line number\n\n"\
 				"  -a ALGO={depth,breadth,br_dom}\n"\
 				"\t\t\tChooses the algorithm to use (by default: depth):\n"\
 				"\t\t\t- depth : creates the tree recursively with closures\n"\
@@ -87,6 +90,7 @@ int main(int argc, char **argv)
 	std::vector<bool> FindLowest;
 	ALGO SelectedAlgo = DEPTH;
 	bool ComputeLastNode = true;
+	bool HasLegend = false;
 
 	long NumArg = 0;
 	while( ++NumArg < argc - 1)
@@ -133,6 +137,10 @@ int main(int argc, char **argv)
 		else if( strcmp( argv[NumArg], "-nolast") == 0)
 		{
 			ComputeLastNode = false;
+		}
+		else if( strcmp( argv[NumArg], "-label") == 0)
+		{
+			HasLegend = true;
 		}
 		else
 		{

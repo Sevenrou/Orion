@@ -37,6 +37,11 @@ Empty fields are not allowed, the loading will fail if the parser detects any
 inconsistency in the number of fields. Moreover, the parser will stop either at
 the end of the file or at the first empty line, whichever happens first.
 
+If you specify the -label option the first column will be considered as a label
+for each element and stored for later use when writing the output file. Since
+the parser is very basic, do not use spaces or commas in the labels. Also, the
+output files can be huge, so you should refrain from using long labels.
+
 By default, Orion will consider that "the lower the value, the better." If you
 want some (or all) dimensions to be considered as "the upper the value, the
 better," you can use the -s option. Each dimension then needs to be described
@@ -65,6 +70,10 @@ For instance, the following line:
   d0d3d4 : e1,e4-e7,e5
 means that for the node of dimensions 0, 3 and 4, the skyline is comprised of
 the elements 1, 4, 5 and 7, the elements 4 and 7 being combined.
+
+If you specified the -label option, each element number will be replaced by its
+associated label in the input file, for instance:
+  d0d3d4 : price,distance-reputation,standing
 
 
 The name of the output file will be the one of the input file suffixed by the
