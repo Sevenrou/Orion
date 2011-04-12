@@ -11,5 +11,6 @@ add_executable(Orion
   os/mac_clock_gettime.cpp
 )
 
-target_link_libraries(Orion rt)
-
+if(NOT APPLE)
+  target_link_libraries(Orion rt)
+endif()
