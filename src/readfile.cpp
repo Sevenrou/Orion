@@ -21,12 +21,12 @@
 #include "readfile.h"
 
 
-long StringTokenCounter( const std::string& Source)
+long StringTokenCounter( const std::string& Source, char delim)
 {
 	long NombreValeurs = 0;
 	size_t pos1 = 0, pos2 = 0;
 
-	while( ( pos2 = Source.find_first_of( " ,", pos2 + 1)) != std::string::npos)
+	while( ( pos2 = Source.find_first_of( delim, pos2 + 1)) != std::string::npos)
 	{
 		if( pos1 == pos2)
 			return -pos1;
@@ -44,9 +44,21 @@ void StringTokenizer(	std::istringstream& Source,
 						double* matrice,
 						const long NumeroPoint,
 						const long NombrePoints,
-						const long NombreDimensions)
+						const long NombreDimensions,
+						char delim,
+						std::vector<std::string>* Labels)
 {
 	long i;
+
+	if( Labels)
+	{
+		std::string label;
+		size_t possep = Source.str().find_first_of( delim);
+		Source.width(possep);
+		Source >> label;
+		Labels->push_back(label);
+		Source.get();
+	}
 
 	for( i = 0; i < NombreDimensions - 1; i++)
 	{
@@ -59,7 +71,12 @@ void StringTokenizer(	std::istringstream& Source,
 	Source >> matrice[i*NombrePoints + NumeroPoint];
 }
 
-bool ParseFileIntoMatrix( const char* FileName, size_t NumDimExpected, double*& matrice, long& NombrePoints, long& NombreDimensions)
+bool ParseFileIntoMatrix(	const char* FileName,
+							size_t NumDimExpected,
+							double*& matrice,
+							long& NombrePoints,
+							long& NombreDimensions,
+							std::vector<std::string>* Labels )
 {
 	std::ifstream FichierEntree( FileName);
 
@@ -67,9 +84,32 @@ bool ParseFileIntoMatrix( const char* FileName, size_t NumDimExpected, double*& 
 		return false;
 
 	std::string ligne;
-
 	getline( FichierEntree, ligne);
-	NombreDimensions = StringTokenCounter( ligne);
+
+	int posdelim = ligne.find_first_of( " ,");
+	if(posdelim == std::string::npos)
+	{
+		std::cout << "No delimiter (either space or comma) found in the first line" << std::endl;
+		return false;
+	}
+
+	char delim = ligne[posdelim];
+	std::cout << "Delimiter found: ";
+	switch(delim)
+	{
+		case ' ':	std::cout << "space";
+					break;
+		case ',':	std::cout << "comma";
+					break;
+		default :	std::cout << "unknown!?";
+	}
+	std::cout << std::endl;
+
+	NombreDimensions = StringTokenCounter( ligne, delim);
+
+	// Is the first column for labels?
+	if( Labels)
+		NombreDimensions--;
 
 	if( NombreDimensions == 0)
 		return false;
@@ -87,7 +127,7 @@ bool ParseFileIntoMatrix( const char* FileName, size_t NumDimExpected, double*& 
 	while( ! FichierEntree.eof())
 	{
 		getline( FichierEntree, ligne);
-		NombreTemp = StringTokenCounter( ligne);
+		NombreTemp = StringTokenCounter( ligne, delim);
 
 		if( NombreTemp < 0)
 		{
@@ -100,6 +140,9 @@ bool ParseFileIntoMatrix( const char* FileName, size_t NumDimExpected, double*& 
 			std::cout << "Line " << NombrePoints + 1 << " empty" << std::endl;
 			break;
 		}
+
+		if( Labels)
+			NombreTemp--;
 
 		if( NombreTemp != NombreDimensions)
 		{
@@ -114,6 +157,9 @@ bool ParseFileIntoMatrix( const char* FileName, size_t NumDimExpected, double*& 
 
 	matrice = new double[NombrePoints*NombreDimensions];
 
+	if( Labels)
+		Labels->reserve(NombrePoints);
+
 	FichierEntree.close();
 	FichierEntree.open( FileName);
 
@@ -121,7 +167,7 @@ bool ParseFileIntoMatrix( const char* FileName, size_t NumDimExpected, double*& 
 	{
 		getline( FichierEntree, ligne);
 		std::istringstream iss( ligne);
-		StringTokenizer( iss, matrice, i, NombrePoints, NombreDimensions);
+		StringTokenizer( iss, matrice, i, NombrePoints, NombreDimensions, delim, Labels);
 	}
 
 	return true;

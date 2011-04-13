@@ -25,9 +25,14 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 
-bool ParseFileIntoMatrix( const char* FileName, size_t NumDimExpected, double*& matrice, long& NombrePoints, long& NombreDimensions);
+bool ParseFileIntoMatrix(	const char* FileName, size_t NumDimExpected,
+							double*& matrice,
+							long& NombrePoints,
+							long& NombreDimensions,
+							std::vector<std::string>* Labels = 0 );
 
 
 #endif /*READFILE_H_*/

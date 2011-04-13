@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 	std::vector<bool> FindLowest;
 	ALGO SelectedAlgo = DEPTH;
 	bool ComputeLastNode = true;
-	bool HasLegend = false;
+	bool HasLabels = false;
 
 	long NumArg = 0;
 	while( ++NumArg < argc - 1)
@@ -140,7 +140,7 @@ int main(int argc, char **argv)
 		}
 		else if( strcmp( argv[NumArg], "-label") == 0)
 		{
-			HasLegend = true;
+			HasLabels = true;
 		}
 		else
 		{
@@ -158,8 +158,11 @@ int main(int argc, char **argv)
 	double* matrice = 0;
 	long NombrePoints = 0;
 	long NombreDimensions = 0;
+	std::vector<std::string>* Labels = 0;
+	if( HasLabels)
+		Labels = new std::vector<std::string>;
 
-	if( ! ParseFileIntoMatrix( argv[NumArg], FindLowest.size(), matrice, NombrePoints, NombreDimensions))
+	if( ! ParseFileIntoMatrix( argv[NumArg], FindLowest.size(), matrice, NombrePoints, NombreDimensions, Labels))
 	{
 		std::cout << "Error in data set parsing" << std::endl;
 		return 1;
