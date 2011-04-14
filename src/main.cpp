@@ -51,7 +51,8 @@
 void OutputResult(	const ArbreCube& bouleau,
 					const std::vector<bool>& FindLowest,
 					ALGO SelectedAlgo,
-					std::string& FichierResultat)
+					std::string& FichierResultat,
+					std::vector<std::string>* Labels )
 {
 	for( std::vector<bool>::const_iterator iteUL = FindLowest.begin(); iteUL != FindLowest.end(); ++iteUL)
 		FichierResultat += (*iteUL) ? "l" : "u";
@@ -63,18 +64,18 @@ void OutputResult(	const ArbreCube& bouleau,
 		std::cout << "Couldn't open file " << FichierResultat << " to store the result, sending to screen" << std::endl;
 
 		if( SelectedAlgo == DEPTH)
-			bouleau.AfficheClos( std::cout);
+			bouleau.AfficheClos( std::cout, Labels);
 		else
-			bouleau.AfficheResultat( std::cout);
+			bouleau.AfficheResultat( std::cout, Labels);
 	}
 	else
 	{
 		std::cout << "Saving result into file " << FichierResultat << std::endl;
 
 		if( SelectedAlgo == DEPTH)
-			bouleau.AfficheClos( OutputStream);
+			bouleau.AfficheClos( OutputStream, Labels);
 		else
-			bouleau.AfficheResultat( OutputStream);
+			bouleau.AfficheResultat( OutputStream, Labels);
 	}
 }
 
@@ -217,7 +218,7 @@ int main(int argc, char **argv)
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Storing result somewhere
 
-	OutputResult( bouleau, FindLowest, SelectedAlgo, FichierResultat);
+	OutputResult( bouleau, FindLowest, SelectedAlgo, FichierResultat, Labels);
 
 #endif // BENCH
 

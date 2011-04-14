@@ -1149,29 +1149,34 @@ Closure* ArbreCube::FindClosure( const HashKey& keyToFind, const HashClosure& Ve
 }
 
 
-void ArbreCube::AfficheResultat( std::ostream& Cout) const
+void ArbreCube::AfficheResultat( std::ostream& Cout, std::vector<std::string>* Labels) const
 {
 	std::vector<Noeud*> Pile;
 	for( size_t i = 0; i < racine->enfants.size(); i++)
-		AfficheNoeud( racine->enfants[i], Pile, Cout);
+		AfficheNoeud( racine->enfants[i], Pile, Cout, Labels);
 
 	while( ! Pile.empty())
-		AfficheLargeur( Pile, Cout);
+		AfficheLargeur( Pile, Cout, Labels);
 }
 
 
-void ArbreCube::AfficheLargeur( std::vector<Noeud*>& Pile, std::ostream& Cout) const
+void ArbreCube::AfficheLargeur( std::vector<Noeud*>& Pile,
+								std::ostream& Cout,
+								std::vector<std::string>* Labels) const
 {
 	std::vector<Noeud*> TempPile;
 
 	for( size_t i = 0; i < Pile.size(); i++)
-		AfficheNoeud( Pile[i], TempPile, Cout);
+		AfficheNoeud( Pile[i], TempPile, Cout, Labels);
 
 	Pile.swap(TempPile);
 }
 
 
-void ArbreCube::AfficheNoeud( const Noeud *TempNoeud, std::vector<Noeud*>& Pile, std::ostream& Cout) const
+void ArbreCube::AfficheNoeud(	const Noeud *TempNoeud,
+								std::vector<Noeud*>& Pile,
+								std::ostream& Cout,
+								std::vector<std::string>* Labels) const
 {
 	if( TempNoeud == 0)
 		return;
@@ -1179,7 +1184,7 @@ void ArbreCube::AfficheNoeud( const Noeud *TempNoeud, std::vector<Noeud*>& Pile,
 	PrintPath( TempNoeud->Chemin, Cout);
 
 	Cout << " : ";
-	AfficheSkyline( TempNoeud->cs_D, TempNoeud->cs_I, TempNoeud->EstComplet, Cout);
+	AfficheSkyline( TempNoeud->cs_D, TempNoeud->cs_I, TempNoeud->EstComplet, Cout, Labels);
 	Cout << std::endl;
 
 	for( size_t i = 0; i < TempNoeud->enfants.size(); i++)
@@ -1187,7 +1192,7 @@ void ArbreCube::AfficheNoeud( const Noeud *TempNoeud, std::vector<Noeud*>& Pile,
 }
 
 
-void ArbreCube::AfficheClos( std::ostream& Cout) const
+void ArbreCube::AfficheClos( std::ostream& Cout, std::vector<std::string>* Labels) const
 {
 	for( HashClosure::const_iterator iteClos = MesNoeudClos.begin(); iteClos != MesNoeudClos.end(); ++iteClos)
 	{
@@ -1202,7 +1207,7 @@ void ArbreCube::AfficheClos( std::ostream& Cout) const
 
 		// skyline
 		Cout << " : ";
-		AfficheSkyline( iteClos->first.first, iteClos->first.second, false, Cout);
+		AfficheSkyline( iteClos->first.first, iteClos->first.second, false, Cout, Labels);
 
 		// generators
 		Cout << " : ";

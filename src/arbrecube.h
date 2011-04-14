@@ -131,8 +131,8 @@ public:
 	void DepthAlgo( bool ComputeLast);
 	void BreadthAlgo( bool UseClosure);
 
-	void AfficheResultat( std::ostream& Cout_Resultat) const;
-	void AfficheClos( std::ostream& Cout) const;
+	void AfficheResultat( std::ostream& Cout_Resultat, std::vector<std::string>* Labels) const;
+	void AfficheClos( std::ostream& Cout, std::vector<std::string>* Labels) const;
 
 	// makes sense only for depth algo
 	unsigned long GetNbProcessedNodes()	const		{ return Compteur; }
@@ -347,11 +347,20 @@ private:
 		Closure* FindClosure(const HashKey& keyToFind, const HashClosure& VecNoeuds);
 
 	// display methods
-	void AfficheLargeur( std::vector<Noeud*>& Pile, std::ostream& Cout) const;
-	void AfficheNoeud( const Noeud *TempNoeud, std::vector<Noeud*>& Pile, std::ostream& Cout) const;
+	void AfficheLargeur(std::vector<Noeud*>& Pile,
+						std::ostream& Cout,
+						std::vector<std::string>* Labels) const;
+	void AfficheNoeud(	const Noeud *TempNoeud,
+						std::vector<Noeud*>& Pile,
+						std::ostream& Cout,
+						std::vector<std::string>* Labels) const;
 
 	template<class _D, class _I>
-	void AfficheSkyline( const _D& cs_D, const _I& cs_I, bool isComplete, std::ostream& Cout) const;
+	void AfficheSkyline(const _D& cs_D,
+						const _I& cs_I,
+						bool isComplete,
+						std::ostream& Cout,
+						std::vector<std::string>* Labels) const;
 
 	ALGO CurrentAlgo;
 	const double* const matrice;
@@ -574,13 +583,26 @@ void ArbreCube::ManageType1( Noeud* TempNoeud,
 
 
 template<class _D, class _I>
-void ArbreCube::AfficheSkyline( const _D& cs_D, const _I& cs_I, bool isComplete, std::ostream& Cout) const
+void ArbreCube::AfficheSkyline( const _D& cs_D,
+								const _I& cs_I,
+								bool isComplete,
+								std::ostream& Cout,
+								std::vector<std::string>* Labels ) const
 {
 	if(isComplete)
 	{
-		Cout << "e0";
-		for( long i = 1; i < NombrePoints; i++)
-			Cout << ',' << 'e' << i;
+		if( Labels)
+		{
+			Cout << (*Labels)[0];
+			for( long i = 1; i < NombrePoints; i++)
+				Cout << ',' << (*Labels)[i];
+		}
+		else
+		{
+			Cout << "e0";
+			for( long i = 1; i < NombrePoints; i++)
+				Cout << ',' << 'e' << i;
+		}
 		return;
 	}
 
@@ -589,7 +611,10 @@ void ArbreCube::AfficheSkyline( const _D& cs_D, const _I& cs_I, bool isComplete,
 	{
 		for( iteDs = cs_D.begin();;)
 		{
-			Cout << 'e' << (*iteDs);
+			if( Labels)
+				Cout << (*Labels)[*iteDs];
+			else
+				Cout << 'e' << (*iteDs);
 			if( ++iteDs != cs_D.end())
 				Cout << ',';
 			else
@@ -607,7 +632,10 @@ void ArbreCube::AfficheSkyline( const _D& cs_D, const _I& cs_I, bool isComplete,
 		{
 			for( iteDs = (*iteSk).begin();;)
 			{
-				Cout << 'e' << (*iteDs);
+				if( Labels)
+					Cout << (*Labels)[*iteDs];
+				else
+					Cout << 'e' << (*iteDs);
 				if( ++iteDs != (*iteSk).end())
 					Cout << "-";
 				else
