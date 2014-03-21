@@ -60,15 +60,20 @@ void StringTokenizer(	std::istringstream& Source,
 		Source.get();
 	}
 
-	for( i = 0; i < NombreDimensions - 1; i++)
+	for( i = 0; i < NombreDimensions; i++)
 	{
 		double pouet;
-		Source >> pouet;
+		std::string pouetTemp;
+		Source >> pouetTemp;
+		if(!pouetTemp.compare("inf")){
+            		pouet = std::numeric_limits<double>::max();
+		}else{
+            		std::istringstream iss(pouetTemp);
+            		iss >> pouet;
+		}
 		matrice[i*NombrePoints + NumeroPoint] = pouet;
 		Source.get();
 	}
-
-	Source >> matrice[i*NombrePoints + NumeroPoint];
 }
 
 bool ParseFileIntoMatrix(	const char* FileName,
