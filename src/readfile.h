@@ -26,6 +26,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <limits>
 
 
 bool ParseFileIntoMatrix(	const char* FileName, size_t NumDimExpected,
